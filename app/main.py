@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers.chat import router as chat_router
 from app.routers.tts import router as tts_router
 from app.routers.conversations import router as conversations_router
+from app.routers.line import router as line_router
 
 # Temporarily disable attendance feature
 # TODO: Re-enable after fixing openpyxl dependency issue
@@ -41,6 +42,7 @@ app.add_middleware(
 app.include_router(chat_router)
 app.include_router(tts_router)
 app.include_router(conversations_router)
+app.include_router(line_router)
 
 # Only include attendance router if it's available
 if attendance_available:
