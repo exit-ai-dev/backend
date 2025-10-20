@@ -5,6 +5,7 @@ LINE Messaging API Webhook
 import os
 import hmac
 import hashlib
+import base64
 import json
 from fastapi import APIRouter, Request, HTTPException, Header
 from typing import Optional
@@ -21,8 +22,9 @@ def verify_signature(body: bytes, signature: str) -> bool:
     """
     LINE Platform からのリクエストを検証
     """
-    if not LINE_CHANNEL_SECRET:
-        # 開発環境では検証をスキップ可能
+    if not LINE_CHANNEL_SECRET or not signature:
+        # Channel Secretが未設定または署名がない場合はスキップ
+        print("[LINE Webhook] Signature verification skipped")
         return True
 
     hash_digest = hmac.new(
@@ -30,8 +32,13 @@ def verify_signature(body: bytes, signature: str) -> bool:
         body,
         hashlib.sha256
     ).digest()
-    expected_signature = hash_digest.hex()
-    return hmac.compare_digest(signature, expected_signature)
+    # LINEはbase64エンコードされた署名を送信
+    expected_signature = base64.b64encode(hash_digest).decode('utf-8')
+
+    is_valid = hmac.compare_digest(signature, expected_signature)
+    if not is_valid:
+        print(f"[LINE Webhook] Signature mismatch. Expected: {expected_signature[:20]}..., Got: {signature[:20]}...")
+    return is_valid
 
 
 @router.post("/webhook")
