@@ -48,6 +48,22 @@ def init_db():
             CREATE INDEX IF NOT EXISTS idx_updated_at ON conversations(updated_at)
         """)
 
+        # LINE用メッセージ履歴テーブル
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS line_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id TEXT NOT NULL,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        # LINE用インデックス
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_line_user_id ON line_messages(user_id, created_at DESC)
+        """)
+
         print("[DB] Database initialized")
 
 def save_conversation(
@@ -175,6 +191,43 @@ def delete_conversation(conversation_id: str, user_id: str) -> bool:
     except Exception as e:
         print(f"[DB] Error deleting conversation: {e}")
         return False
+
+def save_line_message(user_id: str, role: str, content: str) -> bool:
+    """LINE用メッセージを保存"""
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO line_messages (user_id, role, content)
+                VALUES (?, ?, ?)
+            """, (user_id, role, content))
+            return True
+    except Exception as e:
+        print(f"[DB] Error saving LINE message: {e}")
+        return False
+
+def get_line_conversation(user_id: str, limit: int = 10) -> List[Dict[str, str]]:
+    """LINE用の会話履歴を取得（最新N件）"""
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT role, content
+                FROM line_messages
+                WHERE user_id = ?
+                ORDER BY created_at DESC
+                LIMIT ?
+            """, (user_id, limit))
+
+            rows = cursor.fetchall()
+            # 古い順に並び替えて返す
+            return [
+                {"role": row["role"], "content": row["content"]}
+                for row in reversed(rows)
+            ]
+    except Exception as e:
+        print(f"[DB] Error getting LINE conversation: {e}")
+        return []
 
 # アプリ起動時にデータベースを初期化
 init_db()

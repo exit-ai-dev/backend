@@ -11,6 +11,7 @@ from fastapi import APIRouter, Request, HTTPException, Header
 from typing import Optional
 from app.services.line_service import LineService
 from app.services.openai_service import complete_once
+from app.database import save_line_message, get_line_conversation
 
 router = APIRouter(prefix="/api/line", tags=["line"])
 
@@ -132,22 +133,21 @@ async def handle_line_event(event: dict):
 async def get_user_conversation(user_id: str) -> list:
     """
     ユーザーの会話履歴を取得（最新10件）
-    TODO: データベースから取得する実装に変更
     """
-    # 仮実装: 空のリストを返す
-    # 実際にはSQLiteやPostgreSQLから取得
-    return []
+    conversation_history = get_line_conversation(user_id, limit=10)
+    print(f"[LINE] Loaded {len(conversation_history)} messages for user {user_id}")
+    return conversation_history
 
 
 async def save_user_message(user_id: str, user_message: str, ai_response: str):
     """
     会話履歴をデータベースに保存
-    TODO: データベースへの保存を実装
     """
-    # 仮実装: ログ出力のみ
-    print(f"[LINE] User {user_id}: {user_message}")
-    print(f"[LINE] AI: {ai_response}")
-    # 実際にはSQLiteやPostgreSQLに保存
+    # ユーザーメッセージを保存
+    save_line_message(user_id, "user", user_message)
+    # AIの応答を保存
+    save_line_message(user_id, "assistant", ai_response)
+    print(f"[LINE] Saved conversation for user {user_id}")
 
 
 @router.get("/health")
