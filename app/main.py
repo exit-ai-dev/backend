@@ -28,6 +28,7 @@ app = FastAPI()
 
 # ② CORS 設定（ハードコード）
 origins = ["https://brave-glacier-0232c3300.4.azurestaticapps.net"]
+print(f"[CORS] allow_origins={origins}")
 
 app.add_middleware(
     CORSMiddleware,
