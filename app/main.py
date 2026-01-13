@@ -29,7 +29,7 @@ app = FastAPI()
 # ② CORS 設定（.env の FRONTEND_ORIGIN を利用）
 # カンマ区切りで複数のオリジンをサポート
 frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
-print("[CORS] FRONTEND_ORIGIN =", os.getenv("FRONTEND_ORIGIN"))
+print("[CORS] FRONTEND_ORIGIN =", os.getenv("FRONTEND_ORIGIN"), flush=True)
 origins = [origin.strip() for origin in frontend_origin.split(",")]
 
 app.add_middleware(
