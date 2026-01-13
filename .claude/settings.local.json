@@ -23,7 +23,21 @@
       "Bash(python:*)",
       "Bash(uvicorn:*)",
       "Bash(pnpm dev:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git reset:*)",
+      "WebSearch",
+      "WebFetch(domain:voicevox.su-shiki.com)",
+      "Bash(gh run list:*)",
+      "Bash(az webapp config appsettings set:*)",
+      "WebFetch(domain:et-chat-cmcbc3cugwgme7cr.japanwest-01.azurewebsites.net)",
+      "Read(//c/Users/Exitotrinity-13/new/**)",
+      "Read(//c/Users/Exitotrinity-13/dev_exit/**)",
+      "Read(//c/Users/Exitotrinity-13/**)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(test:*)",
+      "Bash(npx msw init:*)"
     ],
     "deny": [],
     "ask": []
