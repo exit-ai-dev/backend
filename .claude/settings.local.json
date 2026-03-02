@@ -37,7 +37,15 @@
       "Bash(pnpm add:*)",
       "Bash(npx tailwindcss init:*)",
       "Bash(test:*)",
-      "Bash(npx msw init:*)"
+      "Bash(npx msw init:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(npm run:*)",
+      "Bash(\"C:/Users/Exitotrinity-13/venv/Scripts/uvicorn\" app.main:app:*)",
+      "Bash(/c/Users/Exitotrinity-13/venv/Scripts/pip install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx:*)",
+      "Bash(/c/Users/Exitotrinity-13/venv/Scripts/python:*)"
     ],
     "deny": [],
     "ask": []
